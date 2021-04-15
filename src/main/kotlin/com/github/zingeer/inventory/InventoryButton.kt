@@ -1,4 +1,4 @@
-package com.github.zingeer
+package com.github.zingeer.inventory
 
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack

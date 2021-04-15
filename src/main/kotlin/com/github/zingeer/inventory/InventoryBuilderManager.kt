@@ -1,4 +1,4 @@
-package com.github.zingeer
+package com.github.zingeer.inventory
 
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryInteractEvent

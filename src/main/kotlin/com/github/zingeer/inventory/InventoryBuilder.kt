@@ -1,4 +1,4 @@
-package com.github.zingeer
+package com.github.zingeer.inventory
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit

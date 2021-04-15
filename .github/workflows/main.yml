@@ -1,0 +1,40 @@
+on:
+  push:
+    tags:
+      - "*"
+
+name: Release InventoryBuilder to JitPack
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Begin CI...
+        uses: actions/checkout@v2
+
+      - name: Get tag
+        id: get_tag
+        uses: dawidd6/action-get-tag@v1
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            #### Release ${{ steps.get_tag.outputs.tag }}
+            Dependency:
+            ```kotlin
+            repositories {
+                maven ("https://jitpack.io/")
+            }
+            dependencies {
+                implementation("com.github.zingeer", "inventory", "${{ steps.get_tag.outputs.tag }}")
+            }
+            ```
+          draft: false
+          prerelease: false

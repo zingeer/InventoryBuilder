@@ -1,9 +1,9 @@
+name: Release InventoryBuilder to JitPack
+
 on:
   push:
     tags:
       - "*"
-
-name: Release InventoryBuilder to JitPack
 
 jobs:
   build:

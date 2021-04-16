@@ -19,9 +19,9 @@ import java.util.function.Consumer
 open class InventoryBuilder
 private constructor(
     val plugin: Plugin,
-    inventoryType: InventoryType,
-    rows: Int,
-    title: String,
+    val inventoryType: InventoryType,
+    val rows: Int,
+    val title: String,
     private val builder: InventoryBuilder.() -> Unit = {}
 ) : InventoryHolder, Listener {
     constructor(
@@ -37,6 +37,25 @@ private constructor(
         title: String,
         builder: InventoryBuilder.() -> Unit = {}
     ) : this(plugin, InventoryType.CHEST, rows, title, builder)
+
+    constructor(
+        plugin: Plugin,
+        rows: Int,
+        title: String,
+        builder: Consumer<InventoryBuilder> = Consumer {}
+    ) : this(plugin, InventoryType.CHEST, rows, title) { builder.accept(this) }
+
+    constructor(
+        plugin: Plugin,
+        rows: Int,
+        title: String
+    ) : this(plugin, InventoryType.CHEST, rows, title)
+
+    constructor(
+        plugin: Plugin,
+        inventoryType: InventoryType,
+        title: String,
+    ) : this(plugin, inventoryType, 3, title)
 
     private val _inventory = if (inventoryType == InventoryType.CHEST)
         Bukkit.createInventory(this, rows * 9, Component.translatable(title)) else
@@ -62,15 +81,15 @@ private constructor(
 
     open fun onClose(event: InventoryCloseEvent) {}
 
-    fun onClose(handler: InventoryCloseEvent.()->Unit) = closeHandlers.add(handler)
+    fun onClose(handler: InventoryCloseEvent.() -> Unit) = closeHandlers.add(handler)
 
     open fun onClick(event: InventoryClickEvent) {}
 
-    fun onClick(handler: InventoryClickEvent.()->Unit) = clickHandlers.add(handler)
+    fun onClick(handler: InventoryClickEvent.() -> Unit) = clickHandlers.add(handler)
 
     open fun onDrag(event: InventoryDragEvent) {}
 
-    fun onDrag(handler: InventoryDragEvent.()->Unit) = dragHandlers.add(handler)
+    fun onDrag(handler: InventoryDragEvent.() -> Unit) = dragHandlers.add(handler)
 
     open fun onInteract(event: InventoryClickEvent) {}
 
@@ -110,7 +129,7 @@ private constructor(
     fun addButton(itemStack: ItemStack, clickable: Boolean, clickHandler: InventoryClickEvent.() -> Unit = {}): InventoryBuilder =
         addButton(firstEmpty(), itemStack, clickable, clickHandler)
 
-    fun addButton(slot: Int, material: Material, text: List<String>, clickable: Boolean, clickHandler: InventoryClickEvent.() -> Unit = {}): InventoryBuilder {
+    fun addButton(slot: Int, material: Material, text: List<String>, clickable: Boolean , clickHandler: InventoryClickEvent.() -> Unit = {}): InventoryBuilder {
         val itemStack = ItemStack(material)
         val itemMeta = itemStack.itemMeta
         itemMeta.addItemFlags(*ItemFlag.values())
@@ -129,6 +148,9 @@ private constructor(
         return addButton(slot, itemStack, clickable, clickHandler)
     }
 
+    fun addButton(slot: Int, material: Material, clickable: Boolean, clickHandler: InventoryClickEvent.() -> Unit = {}): InventoryBuilder =
+        addButton(slot, ItemStack(material), clickable, clickHandler)
+
     fun addButton(material: Material, text: List<String>, clickable: Boolean, clickHandler: InventoryClickEvent.() -> Unit = {}): InventoryBuilder {
         return addButton(firstEmpty(), material, text, clickable, clickHandler)
     }
@@ -146,6 +168,10 @@ private constructor(
     @JvmOverloads
     fun addButton(itemStack: ItemStack, clickable: Boolean, clickHandler: Consumer<InventoryClickEvent> = Consumer {}): InventoryBuilder =
         addButton(itemStack, clickable) { clickHandler.accept(this) }
+
+    @JvmOverloads
+    fun addButton(slot: Int, material: Material, clickable: Boolean, clickHandler: Consumer<InventoryClickEvent> = Consumer {}): InventoryBuilder =
+        addButton(slot, ItemStack(material), clickable) { clickHandler.accept(this) }
 
     @JvmOverloads
     fun addButton(material: Material, text: List<String>, clickable: Boolean, clickHandler: Consumer<InventoryClickEvent> = Consumer {}): InventoryBuilder =

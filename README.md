@@ -1,4 +1,4 @@
-#InventoryBuilder
+# InventoryBuilder
 A simple custom inventory builder for Kotlin.
 
 Gradle Kotlin DSL:
@@ -12,7 +12,7 @@ dependencies {
 }
 ```
 
-###Create Inventory Example
+### Create Inventory Example
 
 First example:
 ```kotlin

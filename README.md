@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.zingeer", "inventory", "1.0.1")
+    implementation("com.github.zingeer", "InventoryBuilder", "1.0.1")
 }
 ```
 
